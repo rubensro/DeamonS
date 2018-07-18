@@ -1,6 +1,6 @@
 ﻿namespace DeamonService
 {
-    partial class Service1
+    partial class DeamonService
     {
         /// <summary> 
         /// Variable del diseñador necesaria.
@@ -28,10 +28,18 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
-            this.ServiceName = "Service1";
+            this.eventLog2 = new System.Diagnostics.EventLog();
+            ((System.ComponentModel.ISupportInitialize)(this.eventLog2)).BeginInit();
+            // 
+            // DeamonService
+            // 
+            this.ServiceName = "DeamonService";
+            ((System.ComponentModel.ISupportInitialize)(this.eventLog2)).EndInit();
+
         }
 
         #endregion
+
+        private System.Diagnostics.EventLog eventLog2;
     }
 }

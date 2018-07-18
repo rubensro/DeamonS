@@ -12,14 +12,17 @@ namespace DeamonService
         /// <summary>
         /// Punto de entrada principal para la aplicación.
         /// </summary>
-        static void Main()
+        static void Main(string[] args)
         {
-            ServiceBase[] ServicesToRun;
-            ServicesToRun = new ServiceBase[]
-            {
-                new Service1()
-            };
+            ServiceBase[] ServicesToRun = new ServiceBase[] { new DeamonService(args) };
             ServiceBase.Run(ServicesToRun);
+
+            /* ServiceBase[] ServicesToRun;
+             ServicesToRun = new ServiceBase[]
+             {
+                 new DeamonService()
+             };
+             ServiceBase.Run(ServicesToRun);*/
         }
     }
 }
