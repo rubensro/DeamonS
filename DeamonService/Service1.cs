@@ -8,6 +8,7 @@ using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
+using System.IO;
 
 namespace DeamonService
 {
@@ -15,7 +16,10 @@ namespace DeamonService
     {
        // private System.ComponentModel.IContainer components;
         private System.Diagnostics.EventLog eventLog1;
+       
+
         private int eventId = 1;
+        public static  int initLog = 0;
 
         public enum ServiceState
         {
@@ -39,6 +43,8 @@ namespace DeamonService
             public int dwCheckPoint;
             public int dwWaitHint;
         };
+
+        public DeamonService() { }
 
         public DeamonService(string[] args)
         {
@@ -70,12 +76,12 @@ namespace DeamonService
             serviceStatus.dwWaitHint = 100000;
             SetServiceStatus(this.ServiceHandle, ref serviceStatus);
 
-
+            
             eventLog1.WriteEntry("In OnStart");
 
             // Set up a timer to trigger every minute.  
             var timer = new System.Timers.Timer();
-            timer.Interval = 60000; // 60 seconds  
+            timer.Interval = 10000; // 10 seconds  
             timer.Elapsed += new System.Timers.ElapsedEventHandler(this.OnTimer);
             timer.Start();
 
@@ -112,5 +118,46 @@ namespace DeamonService
 
         [DllImport("advapi32.dll", SetLastError = true)]
         private static extern bool SetServiceStatus(IntPtr handle, ref ServiceStatus serviceStatus);
+
+
+        private static void MonitorDirectory(string path)
+        {
+            var fileSystemWatcher = new FileSystemWatcher();
+            fileSystemWatcher.Path = path;
+            fileSystemWatcher.Created += FileSystemWatcher_Created;
+            fileSystemWatcher.Renamed += FileSystemWatcher_Renamed;
+            fileSystemWatcher.Deleted += FileSystemWatcher_Deleted;
+            fileSystemWatcher.EnableRaisingEvents = true;
+
+            
+
+             
+    }
+
+        private static void FileSystemWatcher_Created(object sender, FileSystemEventArgs e)
+        {
+            WriteLog("Archivo Creado ", e.Name.ToString());
+            //Console.WriteLine("File Created: {0}", e.Name);
+        }
+
+        private static void FileSystemWatcher_Renamed(object sender, FileSystemEventArgs e)
+        {
+            WriteLog("Archivo Renombrado ", e.Name.ToString());
+            //Console.WriteLine("File Renamed: {0}", e.Name);
+        }
+
+        private static void FileSystemWatcher_Deleted(object sender, FileSystemEventArgs e)
+        {
+            WriteLog("Archivo Creado ", e.Name.ToString());
+            //Console.WriteLine("File Deleted: {0}", e.Name);
+        }
+
+        private static void WriteLog(string msg, string name) {
+
+            var myLog = new DeamonService();
+            myLog.eventLog1.WriteEntry(msg + name);
+
+        }
+
     }
 }
